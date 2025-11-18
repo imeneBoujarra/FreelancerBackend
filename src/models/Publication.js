@@ -4,20 +4,33 @@ const mongoose = require('mongoose');
 const candidatureSchema = new mongoose.Schema({
   candidatId: { 
     type: mongoose.Schema.Types.ObjectId, 
-    ref: 'Utilisateur', // Référence au modèle Utilisateur pour le développeur
+    ref: 'Utilisateur',
     required: true 
   },
   dateCandidature: { 
     type: Date, 
     default: Date.now 
   },
-  // Vous pouvez ajouter d'autres champs comme une lettre de motivation, un prix proposé, etc.
+  prixPropose: {
+    type: Number,
+    required: true
+  },
+  delaiPropose: {
+    type: Number, // en jours
+    required: true
+  },
   message: { 
-    type: String 
-  } 
+    type: String,
+    required: true 
+  },
+  statut: {
+    type: String,
+    enum: ['En attente', 'Acceptée', 'Refusée'],
+    default: 'En attente'
+  }
 });
 
-// Schéma pour la publication (l'offre d'emploi)
+// Schéma pour la publication (projet)
 const publicationSchema = new mongoose.Schema({
   titre: { 
     type: String, 
@@ -30,24 +43,39 @@ const publicationSchema = new mongoose.Schema({
   },
   client: { 
     type: mongoose.Schema.Types.ObjectId, 
-    ref: 'Utilisateur', // Référence au modèle Utilisateur pour le client
+    ref: 'Utilisateur',
     required: true 
   },
   specialiteRequise: { 
     type: String 
   },
   budget: { 
-    type: Number 
+    type: Number,
+    required: true 
+  },
+  dateLimite: {
+    type: Date
   },
   dateCreation: { 
     type: Date, 
     default: Date.now 
   },
-  statut: { // Ex: 'Ouvert', 'En cours', 'Terminé'
-    type: String, 
+  statut: {
+    type: String,
+    enum: ['Ouvert', 'En cours', 'Terminé', 'Annulé'],
     default: 'Ouvert' 
   },
-  candidatures: [candidatureSchema] // Tableau des candidatures
+  candidatures: [candidatureSchema],
+  candidatureAcceptee: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Utilisateur'
+  },
+  prixFinal: {
+    type: Number
+  },
+  delaiFinal: {
+    type: Number
+  }
 });
 
 const Publication = mongoose.model('Publication', publicationSchema);

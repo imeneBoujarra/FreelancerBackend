@@ -502,14 +502,18 @@ async function loginUser(req, res) {
         const token = jwt.sign({ UserId: user._id }, "secret_key", { expiresIn: "12h" });
 
         // Envoi de toutes les données utilisateur (sans le mot de passe)
+
+        //localStorage.setItem("ID" , user._id);
         const userData = {
+            
             nom: user.nom,
             email: user.email,
             role: user.role, 
         };
 
         // Renvoi de l'utilisateur et du token
-        res.json({ user: userData, token });
+       res.json({ user: userData, token });
+       
     } catch (error) {
         console.error("Error during login:", error); 
         res.status(500).json({ error: "An error occurred", details: error.message });
