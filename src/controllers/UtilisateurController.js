@@ -501,18 +501,28 @@ async function loginUser(req, res) {
         // Création du token JWT
         const token = jwt.sign({ UserId: user._id }, "secret_key", { expiresIn: "12h" });
 
-        // Envoi de toutes les données utilisateur (sans le mot de passe)
+        // ✅ FIXED: Don't use localStorage (Node.js backend)
+        // localStorage is ONLY for frontend (browser)
+        // Send user data and token to frontend - frontend will store in localStorage
 
-        //localStorage.setItem("ID" , user._id);
         const userData = {
-            
+            id: user._id,                    // Add user ID
             nom: user.nom,
+            prenom: user.prenom,
             email: user.email,
-            role: user.role, 
+            role: user.role,
+            photo: user.photo || null,      // Include photo
+            specialite: user.specialite || null,
+            num_tel: user.num_tel || null,
+            num_cin: user.num_cin || null
         };
-        localStorage.setItem("id" , user._id);
+
         // Renvoi de l'utilisateur et du token
-       res.json({ user: userData, token });
+        res.json({ 
+            message: "Login successful",
+            user: userData, 
+            token 
+        });
        
     } catch (error) {
         console.error("Error during login:", error); 

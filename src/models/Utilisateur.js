@@ -3,7 +3,13 @@ const mongoose = require('mongoose');
 const utilisateurSchema = new mongoose.Schema({
   nom: { type: String, required: true },
   prenom: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
+  email: { 
+    type: String, 
+    required: true, 
+    unique: true
+    // ✅ REMOVED: index: true (duplicate with unique: true)
+    // unique: true automatically creates an index
+  },
   mdp: { type: String, required: true },
   num_tel: { type: String },
   photo: { type: String },
@@ -11,16 +17,16 @@ const utilisateurSchema = new mongoose.Schema({
   // Rôle: client ou freelance
   role: { 
     type: String, 
-    enum: ['client', 'freelance', 'admin'],
+    enum: ['client', 'freelance', 'admin', 'candidat', 'formateur'],
     required: true 
   },
   
   // Champs spécifiques aux freelances
-  specialite: { type: String }, // ex: "Développement Web", "Design"
+  specialite: { type: String },
   cv_pdf: { type: String },
-  competences: [{ type: String }], // ex: ["React", "Node.js"]
-  tarifHoraire: { type: Number }, // Tarif indicatif
-  description: { type: String }, // Bio du freelance
+  competences: [{ type: String }],
+  tarifHoraire: { type: Number },
+  description: { type: String },
   
   // Système de notation
   note: { type: Number, default: 0 },
@@ -40,8 +46,10 @@ const utilisateurSchema = new mongoose.Schema({
   timestamps: true
 });
 
-// Index pour recherche optimisée
-utilisateurSchema.index({ email: 1 });
+// ✅ REMOVED: Duplicate index definition
+// utilisateurSchema.index({ email: 1 });
+// (Already created by unique: true)
+
 utilisateurSchema.index({ role: 1, specialite: 1 });
 
 const Utilisateur = mongoose.model('Utilisateur', utilisateurSchema);
